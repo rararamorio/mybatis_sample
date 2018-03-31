@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="person">
+  <resultMap id="personMap" type="jp.sample.mybatis.entity.Person">
+    <id property="personId" column="person_id" />
+    <result property="personId" column="person_id" />
+    <result property="name" column="name" />
+    <collection property="books" columnPrefix="b_" resultMap="BookMap" />
+  </resultMap>
+  <resultMap id="BookMap" type="jp.sample.mybatis.entity.Book">
+    <id property="bookId" column="book_id" />
+    <result property="bookId" column="book_id" />
+    <result property="name" column="name" />
+    <association property="category" columnPrefix="c_" resultMap="CategoryMap" />
+  </resultMap>
+  <resultMap id="CategoryMap" type="jp.sample.mybatis.entity.Category">
+    <id property="categoryId" column="category_id" />
+    <result property="categoryId" column="category_id" />
+    <result property="name" column="name" />
+  </resultMap>
+
+  <select id="selectByPersonId" resultMap="personMap">
+    SELECT
+        p.person_id
+      , p.name
+      , b.book_id     as b_book_id
+      , b.name        as b_name
+      , c.category_id as b_c_category_id
+      , c.name        as b_c_name
+    FROM
+      person p
+      INNER JOIN person_book pb USING(person_id)
+      INNER JOIN book b USING(book_id)
+      INNER JOIN category c USING(category_id)
+    WHERE
+      p.person_id=#{person_id}
+  </select>
+</mapper>
